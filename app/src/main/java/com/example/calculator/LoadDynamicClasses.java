@@ -13,11 +13,11 @@ public class LoadDynamicClasses {
 
     private Context context;
     private static final String TAG = "LoadDynamicClasses";
-    private static ArrayList<Class<?>> dymnamicClasses;
+    private static Class<?> dymnamicClass;
 
     public LoadDynamicClasses(Context context) {
         this.context = context;
-        dymnamicClasses = new ArrayList<>();
+        dymnamicClass = null;
     }
 
     public void loadClassesFromApk() {
@@ -25,24 +25,13 @@ public class LoadDynamicClasses {
 
         final DexClassLoader classLoader = new DexClassLoader(apkPath, context.getCacheDir().getAbsolutePath(), null, this.getClass().getClassLoader());
         try {
-            Class<?> classToLoad = (Class<?>) classLoader.loadClass("com.signzy.id_card_extraction.registry.Registry");
-            Field field = classToLoad.getDeclaredField("_classes");
-            ArrayList<Class<?>> classes = (ArrayList<Class<?>>) field.get(null);
-
-            for (Class<?> cls : classes) {
-                dymnamicClasses.add(cls);
-                Log.d(TAG, "loadClassesFromApk: class name: " + cls.getName());
-                for (Method m : cls.getDeclaredMethods()) {
-                    Log.d(TAG, "loadClassesFromApk: method name: " + m.getName());
-                }
-            }
-
+            dymnamicClass = classLoader.loadClass("com.example.calculator.DynamicCalculator");
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static ArrayList<Class<?>> getDymnamicClasses() {
-        return dymnamicClasses;
+    public static Class<?> getDymnamicClass() {
+        return dymnamicClass;
     }
 }
